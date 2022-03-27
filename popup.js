@@ -3,7 +3,7 @@ let restoreButton = document.getElementById("restore-button");
 let highlightSheetInput = document.getElementById('highlight-input');
 let restSheetInput = document.getElementById('rest-input');
 
-chrome.storage.sync.get(['highlightSheet', 'restSheet'], (data) => {
+browser.storage.sync.get(['highlightSheet', 'restSheet'], (data) => {
     highlightSheetInput.value = data.highlightSheet;
     restSheetInput.value = data.restSheet;
 });
@@ -20,35 +20,43 @@ restSheetInput.addEventListener("input", async (text) => {
 restoreButton.addEventListener("click", async () => {
     let defaultHighlightSheet = "font-weight: 600;"
     let defaultRestSheet = "opacity: 0.7;"
-    chrome.storage.sync.set({'highlightSheet' : defaultHighlightSheet, "restSheet": defaultRestSheet});
+    browser.storage.sync.set({'highlightSheet' : defaultHighlightSheet, "restSheet": defaultRestSheet});
     highlightSheetInput.value = defaultHighlightSheet;
     restSheetInput.value = defaultRestSheet;
 });
     
 applyButton.addEventListener("click", async () => {
-    let [tab] = await chrome.tabs.query({active: true, currentWindow: true});
 
-    chrome.scripting.executeScript({
-        target: {tabId: tab.id},
-        function: bionifyPage,
+    function onExecuted(result) {
+        console.log(`done executing`);
+    }
+
+    function onError(error) {
+        console.log(`error: ${error}`);
+    }
+
+    const executing = browser.tabs.executeScript({
+            code: "bionifyPage();"
     });
+
+    executing.then(onExecuted, onError);
 });
 
 
 function onHighlightInputChange(){
-    chrome.storage.sync.set({'highlightSheet': highlightSheetInput.value});
+    browser.storage.sync.set({'highlightSheet': highlightSheetInput.value});
 }
 
 function onRestInputChange(){
-    chrome.storage.sync.set({'restSheet': restSheetInput.value});
+    browser.storage.sync.set({'restSheet': restSheetInput.value});
 }
 
 
 function bionifyPage() {
-    console.log("bionfying page");
+    console.log("bionifying page");
 
     function createStylesheet() {
-        chrome.storage.sync.get(['highlightSheet', 'restSheet'], function(data) {
+        browser.storage.sync.get(['highlightSheet', 'restSheet'], function(data) {
             var style = document.createElement('style');
             style.type = 'text/css';
             style.id = "bionic-style-id";
