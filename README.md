@@ -1,5 +1,3 @@
-# Fastread
-Firefox (manifest v2) version of the forked Chrome extension.
+# Related article: [Does Bionic Reading actually work?](https://blog.readwise.io/bionic-reading-results/)
 
-## Installation
-Follow https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/
+# Please use [Jiffy Reader](https://addons.mozilla.org/en-US/firefox/addon/jiffy-reader/) instead.
